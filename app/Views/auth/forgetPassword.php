@@ -3,30 +3,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sign Up</title>
+    <title>TokyoDiscovery</title>
     <link rel="stylesheet" href="/css/signup.css">
 </head>
 <body>
 
 <div class="form-container">
 
-    <h2>Login to TokyoDiscovery</h2>
+    <h2>Enter email to reset password</h2>
      <?php if (!empty($message) && !empty($color)): ?>
         <div style="color: <?= htmlspecialchars($color) ?>; margin-bottom: 15px;">
              <?= htmlspecialchars($message) ?>
         </div>
     <?php endif ?>
-    <form method="POST" action="/login">
+    <form method="POST" action="/forget-password">
         <label>Email:</label><br>
         <input type="email" name="email" required><br><br>
-
-        <label>Password:</label><br>
-        <input type="password" name="password"><br><br>
-
-        <button type="submit">Login</button>
+        <button type="submit">Submit</button>
     </form>
-    <p>Forgot your password? Reset <a href="/forget-password">here</a></p>
-    <p>Don't have an account? Register <a href="/signup">here</a></p>
+    <p>Return to Login. Click <a href="/login">here</a></p>
 </div>
 
 </body>

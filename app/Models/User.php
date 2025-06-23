@@ -17,7 +17,8 @@ class User
         try 
         {
             $stmt = $this->db->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-            return $stmt->execute([$username, $email, $password]);
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            return $stmt->execute([$username, $email, $hashedPassword]);
         }
         catch (\PDOException $e)
         {
@@ -25,7 +26,7 @@ class User
         }
     }
 
-    public function loginUser(string $email, string $password): bool
+    public function loginUser(string $email, string $password): ?array
     {
         try 
         {
@@ -34,21 +35,52 @@ class User
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$user) {
-                return false;
+                return null;
             };
 
             if (!password_verify($password, $user['password'])) {
-                return false; // Password mismatch
+                return null; // Password mismatch
             }
 
-            return true;
+            return $user;
+        }
+        catch (\PDOException $e)
+        {
+            return null;
+        }
+    }
+
+    public function updatePassword(string $email, string $password): bool
+    {
+        try{
+            $stmt = $this->db->prepare("UPDATE users SET password = ? WHERE email = ? LIMIT 1");
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            $success = $stmt->execute([$hashedPassword, $email]);
         }
         catch (\PDOException $e)
         {
             return false;
         }
+
+        if ($success)
+        {
+            return true;
+        }
+
+        return false;
+
+
     }
-}
+
+    public function getByEmail(string $email): ?array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $user ?: null;
+    }
+}   
 
 
 ?>
