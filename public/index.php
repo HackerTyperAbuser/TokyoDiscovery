@@ -4,7 +4,7 @@
 
 // - Session handling: Cookies
 // - Security: Add CSRF token
-// - Logout + Forget Password functionality
+// - Logout + Forget Password functionality (DONE)
 // - (optional) 2FA + email verification
 // - Password Policy Verification
 // - Username Input Validation
