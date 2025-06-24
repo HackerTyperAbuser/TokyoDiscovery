@@ -1,6 +1,6 @@
 # Tokyo Discovery
 
-This is the repository of Tokyo Discovery a simple Social Media Web Application built with using WAMP stack (Windows - Apache - MySQL - PHP)
+This is the repository of Tokyo Discovery a simple Social Media Web Application built with using WAMP stack (Windows - Apache - MySQL - PHP), built for the purpose of learning PHP web development and application security testing.
 
 ## Project Structure
 
