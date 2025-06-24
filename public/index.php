@@ -2,13 +2,13 @@
 // TODO:
 // 23/6/2025
 
-// - Session handling: Cookies
-// - Security: Add CSRF token
+// - Session handling: Cookies (DONE)
+// - Security: Add CSRF token  (DONE)
 // - Logout + Forget Password functionality (DONE)
-// - (optional) 2FA + email verification
-// - Password Policy Verification
-// - Username Input Validation
-// - Views is being repeated at lot, DRY
+// - (optional) 2FA + email verification 
+// - Password Policy Verification (DONE)
+// - Username Input Validation (Unecessary)
+// - Views is being repeated at lot, DRY 
 
 session_set_cookie_params([
     'httponly' => true,           
@@ -22,11 +22,23 @@ define('BASE_PATH', dirname(__DIR__));
 
 
 // Include the router and controller logic
+require_once BASE_PATH . '/app/Helper/Helper.php';
 require BASE_PATH . '/core/Router.php';
 require BASE_PATH . '/app/Controllers/AuthController.php';
 require BASE_PATH . '/app/Controllers/UserController.php';
 
+if (!isset($_SESSION['csrfToken']))
+{
+    $token = Helper::tokenGenerator(32);
+    $_SESSION['csrfToken'] = $token;
+}
+
 $router = new Router();
+
+if ($_SERVER['REQUEST_URI'] === '/') {
+    header('Location: /login');
+    exit;
+}
 
 // Authentication Routes
 $router->get('/login', [AuthController::class, 'showLoginForm']);
