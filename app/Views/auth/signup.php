@@ -3,14 +3,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sign Up</title>
+    <title>TokyoDiscovery</title>
     <link rel="stylesheet" href="/css/signup.css">
 </head>
 <body>
 
 <div class="form-container">
 
-    <h2>Create an Account</h2>
+    <h2>TokyoDiscovery Signup</h2>
      <?php if (!empty($message) && !empty($color)): ?>
         <div style="color: <?= htmlspecialchars($color) ?>; margin-bottom: 15px;">
              <?= htmlspecialchars($message) ?>
@@ -28,11 +28,12 @@
 
         <label>Confirm Password:</label><br>
         <input type="password" name="confirm_password"><br><br>
+        <input type="hidden" name="csrf" value="<?= $csrf ?>" required>
 
         <button type="submit">Sign Up</button>
     </form>
 
-    <p>Have an account? Login <a href="/login">here</a></p>
+    <p>Have an account? Login <b><a href="/login">here</a></b></p>
 </div>
 
 </body>

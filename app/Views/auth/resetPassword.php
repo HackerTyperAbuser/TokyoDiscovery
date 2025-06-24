@@ -12,7 +12,7 @@
     <h2>Enter your new password</h2>
      <?php if (!empty($message) && !empty($color)): ?>
         <div style="color: <?= htmlspecialchars($color) ?>; margin-bottom: 15px;">
-            <h3><?= htmlspecialchars($message) ?></h3>
+            <p><?= htmlspecialchars($message) ?></p>
         </div>
      <?php endif ?>  
 
@@ -23,10 +23,11 @@
 
             <label>Confirm Password:</label><br>
             <input type="password" name="confirm_password"><br><br>
+            <input type="hidden" name="csrf" value="<?= $csrf ?>" required>
             <button type="submit">Submit</button>
         </form>
     <?php endif ?>
-    <p>Return to Login. Click <a href="/login">here</a></p>
+    <p>Return to Login. Click <b><a href="/login">here</a></b></p>
 </div>
 
 </body>

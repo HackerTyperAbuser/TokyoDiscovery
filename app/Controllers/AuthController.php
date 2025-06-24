@@ -1,6 +1,7 @@
 <?php 
 require_once BASE_PATH . '/app/Models/User.php';
 require_once BASE_PATH . '/core/Views.php';
+require_once BASE_PATH . '/app/Helper/Helper.php';
 
 class AuthController
 {
@@ -24,6 +25,17 @@ class AuthController
     public static function validateEmail()
     {
         $email = trim($_POST['email'] ?? '');
+        $csrf = $_POST['csrf'] ?? '';
+
+        if (!($csrf == $_SESSION['csrfToken']))
+        {
+            Views::render("auth/forgetPassword", [
+                "message" => "Invalid CSRF token",
+                "color" => "red",
+            ]);
+            return;
+        }
+
         $userModel = new User();
         $user = $userModel->getByEmail($email);
 
@@ -35,7 +47,7 @@ class AuthController
         else 
         {
             Views::render("auth/forgetPassword", [
-                "comment" => "Something went wrong",
+                "message" => "Something went wrong",
                 "color" => "red",
             ]);
         }
@@ -54,6 +66,7 @@ class AuthController
     {
         $confirmPassword = $_POST['confirm_password'] ?? '';
         $password = $_POST['password'] ?? '';
+        $csrf = $_POST['csrf'] ?? '';
 
         if (empty($password) || empty($confirmPassword))
         {
@@ -75,6 +88,24 @@ class AuthController
             return;
         }
 
+        if (!($csrf == $_SESSION['csrfToken']))
+        {
+            Views::render("auth/resetPassword", [
+                "message" => "Invalid CSRF token",
+                "color" => "red",
+            ]);
+            return;
+        }
+
+        if (!(Helper::passwordPolicyValidator($password)))
+        {
+            Views::render("auth/resetPassword", [
+                "message" => "Password policy not met",
+                "color" => "red",
+                ]);
+            return;
+        }
+
         $userModel = new User();
         $user = $userModel->updatePassword($_SESSION['reset_email'], $password);
 
@@ -93,7 +124,17 @@ class AuthController
         $email = trim($_POST['email'] ?? '');
         $username = $_POST['username'] ?? '';
         $password = $_POST['password'] ?? '';
+        $csrf = $_POST['csrf'] ?? '';
         $confirmPassword = $_POST['confirm_password'] ?? '';
+
+        if (!($password === $confirmPassword))
+        {
+            Views::render("auth/signup", [
+                "message" => "Passwords do not match",
+                "color" => "red",
+                ]);
+            return;
+        }
 
         if (empty($email) || empty($username) || empty($password) || empty($confirmPassword)) 
         {
@@ -101,27 +142,44 @@ class AuthController
                 "message" => "Please fill in all fields",
                 "color" => "red",
                 ]);
+            return;
         }
-        else
-        {
-            $userModel = new User();
-            $success = $userModel->createUser($username, $email, $password);
 
-            if ($success) 
-            {
-                header("Location: /login");
-                Views::render("auth/login", [
-                    "message" => "Account created successfully. Please log in",
-                    "color" => "green",
+        if (!($csrf == $_SESSION['csrfToken']))
+        {
+            Views::render("auth/signup", [
+                "message" => "Invalid CSRF token",
+                "color" => "red",
+            ]);
+            return;
+        }
+
+        if (!(Helper::passwordPolicyValidator($password)))
+        {
+            Views::render("auth/signup", [
+                "message" => "Password policy not met",
+                "color" => "red",
                 ]);
-            }
-            else 
-            {
-                Views::render("auth/signup", [
-                    "message" => "Failed to create account",
-                    "color" => "red",
-                ]);
-            }
+            return;
+        }
+
+        $userModel = new User();
+        $success = $userModel->createUser($username, $email, $password);
+
+        if ($success) 
+        {
+            Views::render("auth/login", [
+                "message" => "Account created successfully. Please log in",
+                "color" => "green",
+            ]);
+            return;
+        }
+        else 
+        {
+            Views::render("auth/signup", [
+                "message" => "Failed to create account",
+                "color" => "red",
+            ]);
         }
     }
 
@@ -129,6 +187,7 @@ class AuthController
     {
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
+        $csrf = $_POST['csrf'] ?? '';
 
         if (empty($email) || empty($password)) 
         {
@@ -136,27 +195,36 @@ class AuthController
                 "message" => "Please fill in all fields",
                 "color" => "red",
                 ]);
+                return;
         }
-        else
+
+        if (!($csrf === $_SESSION['csrfToken']))
         {
-            $userModel = new User();
-            $user = $userModel->loginUser($email, $password);
-
-            if ($user)
-            {
-                session_regenerate_id(true);
-                $_SESSION['user_email'] = $user['email'];
-                header("Location: /profile");
-            }
-            else 
-            {
-                Views::render("auth/login", [
-                    "message" => "Invalid Credentials",
-                    "color" => "red",
-                ]);
-            }
-
+            Views::render("auth/login", [
+                "message" => "Invalid CSRF token",
+                "color" => "red",
+            ]);
+            return;
         }
+
+        $userModel = new User();
+        $user = $userModel->loginUser($email, $password);
+
+        if ($user)
+        {
+            session_regenerate_id(true);
+            $_SESSION['user_email'] = $user['email'];
+            $_SESSION['csrfToken'] = Helper::tokenGenerator(32);
+            header("Location: /profile");
+        }
+        else 
+        {
+            Views::render("auth/login", [
+                "message" => "Invalid Credentials",
+                "color" => "red",
+            ]);
+        }
+
     }
 
     public static function logout() 
