@@ -68,14 +68,12 @@ class User
         }
 
         return false;
-
-
     }
 
-    public function getByEmail(string $email): ?array
+    public function getById(string $id): ?array
     {
-        $stmt = $this->db->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
-        $stmt->execute([$email]);
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE id = ? LIMIT 1");
+        $stmt->execute([$id]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $user ?: null;

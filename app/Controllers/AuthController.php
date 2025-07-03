@@ -215,7 +215,7 @@ class AuthController
             session_regenerate_id(true);
             $_SESSION['user_email'] = $user['email'];
             $_SESSION['csrfToken'] = Helper::tokenGenerator(32);
-            header("Location: /profile");
+            header("Location: /dashboard");
         }
         else 
         {
@@ -234,7 +234,6 @@ class AuthController
         header("Location: /login");
         exit;
     }
-
 }
 
 ?>

@@ -18,3 +18,16 @@ if (avatarWrapper && avatarInput && avatarPreview) {
         }
     });
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+const tabButtons = document.querySelectorAll(".tab-button");
+
+tabButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+    // Remove 'active' from all buttons
+    tabButtons.forEach((btn) => btn.classList.remove("active"));
+
+    this.classList.add("active");
+    });
+});
+});
