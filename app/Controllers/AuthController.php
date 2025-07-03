@@ -214,8 +214,12 @@ class AuthController
         {
             session_regenerate_id(true);
             $_SESSION['user_email'] = $user['email'];
+            
+            // Check if session id is the same => return "edit" and "logout" button if the same
+            $_SESSION['id'] = $user['id']; 
+            // Update csrfToken in session
             $_SESSION['csrfToken'] = Helper::tokenGenerator(32);
-            header("Location: /profile");
+            header("Location: /dashboard");
         }
         else 
         {
@@ -234,7 +238,6 @@ class AuthController
         header("Location: /login");
         exit;
     }
-
 }
 
 ?>

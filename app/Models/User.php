@@ -50,6 +50,45 @@ class User
         }
     }
 
+    public function updateDescription(string $id, string $description): bool
+    {
+        try{
+            $stmt = $this->db->prepare("UPDATE users SET description = ? WHERE id = ? LIMIT 1");
+            $success = $stmt->execute([$description, $id]);
+        }
+        catch (\PDOException $e)
+        {
+            return false;
+        }
+        if ($success)
+        {
+            return true;
+        }
+
+        return false;
+
+    }
+
+        public function updateUsername(string $id, string $username): bool
+    {
+        try{
+            $stmt = $this->db->prepare("UPDATE users SET username = ? WHERE id = ? LIMIT 1");
+            $success = $stmt->execute([$username, $id]);
+        }
+        catch (\PDOException $e)
+        {
+            return false;
+        }
+        if ($success)
+        {
+            return true;
+        }
+
+        return false;
+
+    }
+
+
     public function updatePassword(string $email, string $password): bool
     {
         try{
@@ -68,14 +107,12 @@ class User
         }
 
         return false;
-
-
     }
 
-    public function getByEmail(string $email): ?array
+    public function getById(string $id): ?array
     {
-        $stmt = $this->db->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
-        $stmt->execute([$email]);
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE id = ? LIMIT 1");
+        $stmt->execute([$id]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $user ?: null;
