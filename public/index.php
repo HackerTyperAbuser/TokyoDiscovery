@@ -1,13 +1,5 @@
 <?php
 // TODO:
-// 23/6/2025
-
-// - Session handling: Cookies (DONE)
-// - Security: Add CSRF token  (DONE)
-// - Logout + Forget Password functionality (DONE)
-// - (optional) 2FA + email verification 
-// - Password Policy Verification (DONE)
-// - Username Input Validation (Unecessary)
 // - Views is being repeated at lot, DRY 
 
 session_set_cookie_params([
@@ -55,6 +47,16 @@ $router->post('/reset-password', [AuthController::class, 'resetPassword']);
 
 // User Routes
 $router->get('/profile', [UserController::class, 'showProfile']);
+// TODO
+// -------------------------------------------------------------------------------
+$router->get('/profile/edit', [UserController::class, 'showEditProfileForm']);
+$router->post('/profile/edit', [UserController::class, 'updateProfile']);
+$router->get('/profile/delete', [UserController::class, 'deleteProfile']);
+$router->post('/profile/visibility', [UserController::class, 'updateVisible']);
+// -------------------------------------------------------------------------------
+
+// Dashboard Routes
+$router->get('/dashboard', [UserController::class, 'showDashboard']);
 
 $router->dispatch($_SERVER['REQUEST_URI']);
 ?>

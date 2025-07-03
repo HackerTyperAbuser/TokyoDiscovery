@@ -12,9 +12,39 @@ require_once BASE_PATH . '/core/Views.php';
 
 class UserController
 {
+    public static function showDashboard()
+    {
+        Views::render("home/dashboard");
+        return;
+    }
+
+    public static function showEditProfileForm()
+    {
+        Views::render("user/editProfile");
+        return;
+    }
+
+    public static function updateProfile()
+    {
+        return;
+    }
+
+    public static function updateVisible()
+    {
+        http_response_code(200);
+
+        // Output the JSON
+        echo json_encode([
+            'success' => true,
+            'visibility' => 'Private',
+            'message' => 'Visibility updated successfully.'
+        ]);
+        exit;
+    }
+
     public static function showProfile() 
     {
-        if (!isset($_SESSION['user_email'])) {
+        if (!isset($_SESSION['id'])) {
             Views::render("auth/login", [
                 "message" => "You must log in first",
                 "color" => "red",
@@ -25,6 +55,13 @@ class UserController
         $profileId = $_GET['id'] ?? null;
         if (!$profileId) {
             http_response_code(400);
+            echo "Missing id";
+            exit;
+        }
+
+        $current = false;
+        if($_SESSION['id'] == $profileId) {
+            $current = true;
         }
 
         $userModel = new User();
@@ -33,13 +70,16 @@ class UserController
         if (!$user) 
         {
             http_response_code(404);
+            echo "User does not exist";
+            exit;
         }
 
         Views::render("user/profile", [
             "username" => $user['username'],
             "description" => $user['description'],
             "totalFriends" => $user['friends'],
-            "totalPosts" => $user['posts']
+            "totalPosts" => $user['posts'],
+            "current" => $current
         ]);
     }
 }

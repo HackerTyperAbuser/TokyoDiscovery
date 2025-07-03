@@ -19,8 +19,12 @@
           <?php if (!empty($username)): ?>
           <h2><?= htmlspecialchars($username) ?></h2>
           <?php endif ?>
-          <button class="edit-button">Edit Profile</button>
+
+          <?php if (!empty($current)): ?>
+          <button class="edit-button" onclick="window.location.href='/profile/edit'">Edit Profile</button>
           <button class="logout-button" onclick="window.location.href='/logout'">Logout</button>
+          <?php endif ?>
+
         </div>
         <div class="stats">
           <?php if(!($totalFriends) && !($totalPosts)): ?>
@@ -60,6 +64,6 @@
       <img src="/images/default-avatar.jpg" alt="Post 4">
     </div>
   </div>
-  <script src="/js/avatarUpload.js"></script>
+  <script src="/js/profile.js"></script>
 </body>
 </html>
