@@ -8,6 +8,14 @@
 </head>
 <body>
     <div>
+        <button onclick="window.location.href='/profile?id=<?= $_SESSION['id'] ?>'">Return</button>
+    </div>
+    <?php if (!empty($message) && !empty($color)): ?>
+        <div style="color: <?= htmlspecialchars($color) ?>; margin-bottom: 15px; margin-top: 15px">
+            <?= htmlspecialchars($message) ?>
+        </div>
+    <?php endif ?>
+    <div>
         <div>
             <span id="visibilityLabel">Public</span>
         </div>
@@ -25,14 +33,14 @@
         </div>
         <div>
             <label>Username:</label><br>
-            <input type="text" name="username"><br><br>
+            <input type="text" name="username" value="<?= $currentUsername ?>"><br><br>
             <label>Description:</label><br>
-            <input type="text" name="description"><br><br>
+            <input type="text" name="description" value="<?= $currentDescription ?>"><br><br>
             
         </div>
         <input type="hidden" name="csrf" value="<?= $csrf ?>" required>
 
-        <button type="submit">Login</button>
+        <button type="submit">Update profile</button>
     </form>    
 </body>
 <script src=/js/editProfile.js></script>

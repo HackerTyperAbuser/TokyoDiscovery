@@ -20,12 +20,41 @@ class UserController
 
     public static function showEditProfileForm()
     {
-        Views::render("user/editProfile");
+        $userModel = new User();
+        $user = $userModel->getById($_SESSION['id']);
+
+        Views::render("user/editProfile", [
+            "currentUsername" => $user['username'],
+            "currentDescription" => $user['description'],
+        ]);
         return;
     }
 
     public static function updateProfile()
     {
+        $username = $_POST['username'] ?? null;
+        $description = $_POST['description'] ?? null;
+        $email = $_POST['email'] ?? null;
+        $password = $_POST['password'] ?? null;
+
+        $userModel = new User();
+
+        if (isset($description)) {
+            $userModel->updateDescription($_SESSION['id'], $description);
+        }
+
+        if (isset($username)) {
+            $userModel->updateUsername($_SESSION['id'], $username);
+        }
+
+        $user = $userModel->getById($_SESSION['id']);
+
+        Views::render("user/editProfile", [
+            "message" => "Profile has been updated!",
+            "color" => "green",
+            "currentUsername" => $user['username'],
+            "currentDescription" => $user['description'],
+        ]);
         return;
     }
 
